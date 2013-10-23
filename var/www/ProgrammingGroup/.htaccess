@@ -1,0 +1,6 @@
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /ProgrammingGroup/
+
+	RewriteRule ^([a-zA-Z0-9]+)/([a-zA-Z0-9]+)$ product.php?pid=$1&time=$2
+</IfModule>

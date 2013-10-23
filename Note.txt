@@ -1,0 +1,90 @@
+Author: Dung Harry
+Date created: 23rd, October 2013
+
+Description: this is a note about how to rewriting url in apache2 php in linux OS
+
+Firstly, you need to enable mod_rewrite in your apache2 server by following command on Debian/Linux:
+a2enmod rewrite
+
+Secondly, allowing read .htaccess file in your /etc/apache2/apache2.conf file, adding some line init file, below part "AccessFileName .htaccess":
+
+<Directory /var/www/*>
+                Options Indexes FollowSymLinks MultiViews
+                AllowOverride All
+                Order allow,deny
+                allow from all
+</Directory>
+
+We need to add some lines because it will allow for server read your .htaccess file for rewriting url.
+
+After all, restart your apache2 server by using the command below:
+
+service apache2 restart
+
+It is all things needed to do before creating a .htaccess file for rewriting url.
+
+Now, I will take you an example about rewriting url: 
+In my directory, I have a product.php file, it had the following content:
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Product php</title>
+</head>
+
+<body>
+<?php
+        echo "Product id: " . $_GET["pid"] . "!" . "<br />";
+        echo "Time: " .$_GET["time"] . "!";
+?>
+</body>
+</html>
+
+I place it under the directory /var/www/ProgrammingGroup/product.php. This php file will take two getting parameters and display them to users, those are: pid and time. A accessing url like that:
+
+http://localhost/ProgrammingGroup/product.php?pid=1&time=10
+
+Or whatever value you placed for them. So how to rewriting the directory to:
+
+http://localhost/ProgrammingLanguage/1/10
+It equals to: http://localhost/ProgrammingGroup/product.php?pid=1&time=10
+
+It also your question here. My answering is using .htaccess for that. In your example, you need to create a .htaccess in the directory: /var/www/ProgrammingGroup/ and place the following text init:
+
+<IfModule mod_rewrite.c>
+        RewriteEngine On
+        RewriteBase /ProgrammingGroup/
+
+        RewriteRule ^([a-zA-Z0-9]+)/([a-zA-Z0-9]+)$ product.php?pid=$1&time=$2
+</IfModule>
+
+Or just simple like that:
+
+RewriteEngine On
+RewriteBase /ProgrammingGroup/
+
+RewriteRule ^([a-zA-Z0-9]+)/([a-zA-Z0-9]+)$ product.php?pid=$1&time=$2
+
+How does it work?
+
+I will explain this:
+
+Turn your rewrite mode by: "RewriteEngine On" line
+
+The "RewriteBase /ProgrammingGroup/" is the base directory for all rewriting rules
+
+And the rule is defined that: 
+RewriteRule ^([a-zA-Z0-9]+)/([a-zA-Z0-9]+)$ product.php?pid=$1&time=$2
+
+It means searching until meet $ and the first "([a-zA-Z0-9]+)" for pid and the second "([a-zA-Z0-9]+)" for time parameter. Check all character from a -> z, A -> Z and the number from 0 -> 9 for value of two parameters. And replace accessing url is: 
+
+product.php?pid=$1&time=$2
+
+with $1 exchange for the first and $2 exchange for the second.
+
+As I revoled above, it is not about the code. It is almost about RegEx(or regular expression), master your knowledge about RegEx. You can create the expected rules you want
+
+Well, it is very clear. Finally, I hope you will understand
+
+Best regards,
+Dung Harry
